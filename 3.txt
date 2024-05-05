@@ -1,0 +1,40 @@
+import nltk
+
+nltk.download('vader_lexicon')
+
+from nltk.sentiment.vader import SentimentIntensityAnalyzer
+
+# function to print sentiments of the sentence
+def sentiment_scores(sentence):
+    # Create a SentimentIntensityAnalyzer object
+    sid_obj = SentimentIntensityAnalyzer()
+    
+    # polarity_scores method of SentimentIntensityAnalyzer object gives a sentiment dictionary
+    sentiment_dict = sid_obj.polarity_scores(sentence)
+    print("Overall sentiment dictionary is", sentiment_dict)
+    print("Sentence was rated as", sentiment_dict['neg']*100, "% Negative")
+    print("Sentence was rated as", sentiment_dict['neu']*100, "% Neutral")
+    print("Sentence was rated as", sentiment_dict['pos']*100, "% Positive")
+
+    # decide sentiment as positive, negative and neutral
+    if sentiment_dict['compound'] >= 0.05:
+        print("Positive")
+    elif sentiment_dict['compound'] <= -0.05:
+        print("Negative")
+    else:
+        print("Neutral")
+
+# Driver code
+if __name__ == "__main__":
+    print("\n1st statement")
+    sentence = "This is the best movie I have watched ever!"
+    # function calling
+    sentiment_scores(sentence)
+
+    print("\n2nd Statement")
+    sentence = "I do not like you."
+    sentiment_scores(sentence)
+
+    print("\n3rd Statement")
+    sentence = "I would not recommend this product to you"
+    sentiment_scores(sentence)

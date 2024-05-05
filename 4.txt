@@ -1,0 +1,55 @@
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.metrics import mean_squared_error
+
+# Load the dataset
+url = "http://archive.ics.uci.edu/ml/machine-learning-databases/abalone/abalone.data"
+abalone_columns = ['Sex', 'Length', 'Diameter', 'Height', 'Whole weight', 'Shucked weight', 'Viscera weight', 'Shell weight', 'Rings']
+abalone_data = pd.read_csv(url, names=abalone_columns)
+
+# Convert sex from categorical to numerical
+abalone_data['Sex'] = abalone_data['Sex'].map({'M': 0, 'F': 1, 'I': 2})
+
+# Split data into features and target
+X = abalone_data.drop('Rings', axis=1)  # Features
+y = abalone_data['Rings']  # Target (age in years)
+
+# Split data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Initialize and train the linear regression model
+model = LinearRegression()
+model.fit(X_train, y_train)
+
+# Make predictions on test set
+y_pred = model.predict(X_test)
+
+# Display actual vs predicted age
+results = pd.DataFrame({'Actual Age': y_test, 'Predicted Age': y_pred})
+print("Actual vs Predicted Age:")
+print(results)
+
+# Calculate mean squared error
+mse_reg = mean_squared_error(y_test, y_pred)  # Fix the variable names here
+print("Mean Squared Error (Regression):", mse_reg)
+
+# Make predictions on user input
+sex = int(input("Enter sex (0 for M, 1 for F, 2 for I): "))
+length = float(input("Enter length (mm): "))
+diameter = float(input("Enter diameter (mm): "))
+height = float(input("Enter height (mm): "))
+whole_weight = float(input("Enter whole weight (grams): "))
+shucked_weight = float(input("Enter shucked weight (grams): "))
+viscera_weight = float(input("Enter viscera weight (grams): "))
+shell_weight = float(input("Enter shell weight (grams): "))
+
+user_input = pd.DataFrame({'Sex': [sex], 'Length': [length], 'Diameter': [diameter], 'Height': [height], 
+                           'Whole weight': [whole_weight], 'Shucked weight': [shucked_weight], 
+                           'Viscera weight': [viscera_weight], 'Shell weight': [shell_weight]})
+
+predicted_age = model.predict(user_input)[0]
+print("Predicted Age of the abalone:", round(predicted_age, 2), "years")
+
+
+#ex = [0.295 , 0.225 , 0.08 , 0.124 , 0.0485, 0.032 , 0.04 ]
